@@ -35,6 +35,7 @@ jobs:
           -r ios-arm64
           -p:BuildIpa=true
           -p:TrimMode=copy
+          -p:UseInterpreter=true
           -p:EnableCodeSigning=false
           -p:CodesignKey=
           -p:CodesignProvision=

@@ -1,5 +1,0 @@
-<Project>
-  <!-- The framework's AOT-only assembly stripper expects ILLink output.
-       The fast Release workflow intentionally uses TrimMode=copy. -->
-  <Target Name="OsuFrameworkIOSStripAssemblies" />
-</Project>

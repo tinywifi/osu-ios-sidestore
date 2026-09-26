@@ -1,4 +1,4 @@
-name: Build unsigned iOS IPA (Debug compatible)
+name: Build unsigned iOS IPA (Release)
 
 on:
   workflow_dispatch:
@@ -30,7 +30,7 @@ jobs:
       - name: Publish unsigned IPA
         run: >
           dotnet publish osu.iOS/osu.iOS.csproj
-          -c Debug
+          -c Release
           -f net10.0-ios
           -r ios-arm64
           -p:BuildIpa=true

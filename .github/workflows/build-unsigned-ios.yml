@@ -1,4 +1,4 @@
-name: Build unsigned iOS IPA (Release, fast)
+name: Build unsigned iOS IPA (Debug compatible)
 
 on:
   workflow_dispatch:
@@ -30,14 +30,10 @@ jobs:
       - name: Publish unsigned IPA
         run: >
           dotnet publish osu.iOS/osu.iOS.csproj
-          -c Release
+          -c Debug
           -f net10.0-ios
           -r ios-arm64
           -p:BuildIpa=true
-          -p:TrimMode=copy
-          -p:UseInterpreter=true
-          -p:MtouchInterpreter=all
-          -p:CustomAfterMicrosoftCSharpTargets=$GITHUB_WORKSPACE/build/ios-fast-late.targets
           -p:EnableCodeSigning=false
           -p:CodesignKey=
           -p:CodesignProvision=

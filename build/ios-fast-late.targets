@@ -1,4 +1,0 @@
-<Project>
-  <!-- Override osu!framework's AOT-only stripper after NuGet targets are imported. -->
-  <Target Name="OsuFrameworkIOSStripAssemblies" />
-</Project>

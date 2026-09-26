@@ -36,6 +36,7 @@ jobs:
           -p:BuildIpa=true
           -p:TrimMode=copy
           -p:UseInterpreter=true
+          -p:CustomAfterMicrosoftCommonTargets=$GITHUB_WORKSPACE/build/ios-fast.targets
           -p:EnableCodeSigning=false
           -p:CodesignKey=
           -p:CodesignProvision=

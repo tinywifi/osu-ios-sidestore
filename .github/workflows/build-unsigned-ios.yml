@@ -36,6 +36,7 @@ jobs:
           -p:BuildIpa=true
           -p:TrimMode=copy
           -p:UseInterpreter=true
+          -p:MtouchInterpreter=all
           -p:CustomAfterMicrosoftCSharpTargets=$GITHUB_WORKSPACE/build/ios-fast-late.targets
           -p:EnableCodeSigning=false
           -p:CodesignKey=

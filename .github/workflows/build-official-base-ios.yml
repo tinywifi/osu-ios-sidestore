@@ -55,9 +55,10 @@ jobs:
 
       - name: Validate official game assembly hash
         run: |
-          game_dll=$(find . -path '*/publish/osu.iOS.app/osu.Game.dll' -print -quit)
-          test -n "$game_dll"
-          actual_hash=$(md5 -q "$game_dll")
+          ipa_path=$(find . -name '*.ipa' -print -quit)
+          test -n "$ipa_path"
+          unzip -p "$ipa_path" Payload/osu.iOS.app/osu.Game.dll > "$RUNNER_TEMP/osu.Game.dll"
+          actual_hash=$(md5 -q "$RUNNER_TEMP/osu.Game.dll")
           echo "osu.Game.dll MD5: $actual_hash"
           test "$actual_hash" = "3d5918e57f4706d25d3d234b985a8b04"
 

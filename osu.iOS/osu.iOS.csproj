@@ -19,6 +19,14 @@
     <ProjectReference Include="..\osu.Game.Rulesets.Osu\osu.Game.Rulesets.Osu.csproj" />
     <ProjectReference Include="..\osu.Game.Rulesets.Taiko\osu.Game.Rulesets.Taiko.csproj" />
   </ItemGroup>
+  <!-- The official release ships this external auth client. The CI workflow downloads
+       the matching release assembly without committing it to this repository. -->
+  <ItemGroup Condition="'$(AuthAssemblyPath)' != '' And Exists('$(AuthAssemblyPath)')">
+    <Reference Include="osu.Game.Auth" HintPath="$(AuthAssemblyPath)" Private="true" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(AuthAotDataPath)' != '' And Exists('$(AuthAotDataPath)')">
+    <BundleResource Include="$(AuthAotDataPath)" Link="osu.Game.Auth.aotdata.arm64" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Maui.Essentials" Version="8.0.3" />
   </ItemGroup>

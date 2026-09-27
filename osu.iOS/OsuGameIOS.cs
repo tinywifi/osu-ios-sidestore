@@ -24,7 +24,7 @@ namespace osu.iOS
 
         public override string Version => NSBundle.MainBundle.InfoDictionary["OsuVersion"].ToString();
 
-        // Debug builds should still connect to the production osu! services.
+        // Keep the production endpoints when this release build is installed outside the App Store.
         public override bool UseDevelopmentServer => false;
 
         public override Vector2 ScalingContainerTargetDrawSize => new Vector2(1024, 1024 * DrawHeight / DrawWidth);

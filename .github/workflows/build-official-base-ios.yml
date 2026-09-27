@@ -1,0 +1,69 @@
+name: Build official-base unsigned iOS IPA
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build official-base IPA
+    runs-on: macos-26
+    timeout-minutes: 240
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install .NET 10
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Install iOS workload
+        run: dotnet workload install ios
+
+      - name: Select Xcode
+        run: sudo xcode-select -switch /Applications/Xcode_26.6.app
+
+      - name: Download official auth client
+        env:
+          OFFICIAL_IPA_URL: https://github.com/ppy/osu/releases/download/2026.921.0-lazer/osu.iOS.ipa
+        run: |
+          mkdir -p "$RUNNER_TEMP/osu-auth-client/Payload/osu.iOS.app"
+          curl --fail --location --retry 3 "$OFFICIAL_IPA_URL" \
+            -o "$RUNNER_TEMP/osu-auth-client/osu.iOS.ipa"
+          unzip -q "$RUNNER_TEMP/osu-auth-client/osu.iOS.ipa" \
+            'Payload/osu.iOS.app/osu.Game.Auth.dll' \
+            'Payload/osu.iOS.app/osu.Game.Auth.aotdata.arm64' \
+            -d "$RUNNER_TEMP/osu-auth-client"
+
+      - name: Publish unsigned IPA
+        run: >
+          dotnet publish osu.iOS/osu.iOS.csproj
+          -c Release
+          -f net10.0-ios
+          -r ios-arm64
+          -p:Version=2026.921.0-lazer
+          -p:AuthAssemblyPath="$RUNNER_TEMP/osu-auth-client/Payload/osu.iOS.app/osu.Game.Auth.dll"
+          -p:AuthAotDataPath="$RUNNER_TEMP/osu-auth-client/Payload/osu.iOS.app/osu.Game.Auth.aotdata.arm64"
+          -p:BuildIpa=true
+          -p:EnableCodeSigning=false
+          -p:CodesignKey=
+          -p:CodesignProvision=
+
+      - name: Validate official game assembly hash
+        run: |
+          game_dll=$(find . -path '*/publish/osu.iOS.app/osu.Game.dll' -print -quit)
+          test -n "$game_dll"
+          actual_hash=$(md5 -q "$game_dll")
+          echo "osu.Game.dll MD5: $actual_hash"
+          test "$actual_hash" = "3d5918e57f4706d25d3d234b985a8b04"
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v7
+        with:
+          name: osu-ios-official-base-unsigned
+          path: '**/*.ipa'
+          if-no-files-found: error

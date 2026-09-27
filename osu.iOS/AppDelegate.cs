@@ -4,6 +4,7 @@
 using System;
 using Foundation;
 using osu.Framework.iOS;
+using osu.Game.Auth;
 using UIKit;
 
 namespace osu.iOS
@@ -11,6 +12,7 @@ namespace osu.iOS
     [Register("AppDelegate")]
     public class AppDelegate : GameApplicationDelegate, IUIApplicationDelegate
     {
+        private Loader? loader;
         private UIInterfaceOrientationMask? defaultOrientationsMask;
         private UIInterfaceOrientationMask? orientations;
 
@@ -39,7 +41,12 @@ namespace osu.iOS
             }
         }
 
-        protected override Framework.Game CreateGame() => new OsuGameIOS(this);
+        protected override Framework.Game CreateGame()
+        {
+            var game = new OsuGameIOS(this);
+            loader = new Loader(new IOSGameHost(), game);
+            return game;
+        }
 
         public UIInterfaceOrientationMask GetSupportedInterfaceOrientations(UIApplication application, UIWindow forWindow)
         {
